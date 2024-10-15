@@ -40,7 +40,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.book),
-          label: '나의 도서', // Label 추가
+          label: '도서', // Label 추가
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.timer),
@@ -56,8 +56,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ),
       ],
       currentIndex: widget.selectedIndex,
-      selectedItemColor: Colors.green,
-      unselectedItemColor: Colors.grey,
+      backgroundColor: Color(0xFFF0E3C0),
+      selectedItemColor: Color(0xFF789C49),
+      unselectedItemColor: Colors.white,
+      showUnselectedLabels: false,  // 선택되지 않은 메뉴는 라벨 숨기기
       onTap: _onItemTapped,
     );
   }
