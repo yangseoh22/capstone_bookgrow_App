@@ -34,7 +34,7 @@ class _MyBooksState extends State<MyBooks> {
               alignment: Alignment.center, // 가로 방향으로 중앙 정렬
               child: ElevatedButton(
                 onPressed: () {
-                  Get.to(() => BarcodeScanExample());  // 새로운 도서 등록 로직 추가
+                  Get.to(() => BookScannerPage());  // 새로운 도서 등록 로직 추가
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
