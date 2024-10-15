@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:logger/logger.dart';  // 로그
-import 'book_info.dart'; // 도서 정보 페이지
+import 'package:logger/logger.dart';
+import 'book_info.dart';
 
 // Logger 인스턴스 생성
 var logger = Logger();
@@ -30,7 +30,6 @@ class _BarcodeScanExampleState extends State<BarcodeScanExample> {
         logger.i("스캔된 바코드: $barcode");  // 정보 로그
         logger.i("생성된 API URL: $apiUrl");  // 정보 로그
       });
-      // 스캔 후에 API 요청 및 결과 페이지로 이동
       if (apiUrl.isNotEmpty) {
         logger.i("API 요청을 위해 페이지 이동");
         Navigator.push(
@@ -66,10 +65,7 @@ class _BarcodeScanExampleState extends State<BarcodeScanExample> {
 
   // 국립중앙도서관 ISBN API URL 조합 메서드
   String _generateApiUrl(String isbn) {
-    // 국립중앙도서관 API의 기본 URL
     const baseUrl = 'https://www.nl.go.kr/NL/search/openApi/search.do';
-
-    // kwd 파라미터에 스캔된 ISBN과 API 키를 조합하여 최종 URL 생성
     return '$baseUrl?key=$apiKey&kwd=$isbn';
   }
 
@@ -77,48 +73,49 @@ class _BarcodeScanExampleState extends State<BarcodeScanExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BookGrow'),  // 앱 상단의 제목
+        title: Text('나의 도서'), // 상단 제목
+        backgroundColor: Color(0xFFD9C6A5), // 상단 배경색
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // ISBN 직접 입력 필드
-              TextField(
-                controller: isbnController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter ISBN',
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 첫 번째 버튼: 바코드 인식
+            ElevatedButton(
+              onPressed: scanBarcode,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFEFF3E2), // 연한 초록 배경색
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 36.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                keyboardType: TextInputType.number,  // 숫자 키패드 표시
-                onChanged: (value) {
-                  setState(() {
-                    isbnInput = value;  // 입력된 ISBN을 반영
-                  });
-                },
+                side: BorderSide(color: Color(0xFF789C49)), // 테두리 색상
               ),
-              SizedBox(height: 10),  // 여백 추가
-              // 도서 검색 버튼
-              ElevatedButton(
-                onPressed: searchBook,  // 버튼 클릭 시 ISBN 검색 실행
-                child: Text('Search Book by ISBN'),
+              child: Text(
+                '카메라로 바코드 인식하기',
+                style: TextStyle(color: Color(0xFF789C49)), // 텍스트 색상
               ),
-              SizedBox(height: 20),  // 버튼과 스캔 버튼 사이에 여백 추가
-              // 바코드 스캔 시작 버튼
-              ElevatedButton(
-                onPressed: scanBarcode,  // 버튼 클릭 시 바코드 스캔 실행
-                child: Text('Scan Barcode'),
+            ),
+            SizedBox(height: 20), // 버튼 사이 여백
+
+            // 두 번째 버튼: ISBN 직접 입력
+            ElevatedButton(
+              onPressed: searchBook,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFEFF3E2),
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 36.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                side: BorderSide(color: Color(0xFF789C49)),
               ),
-              SizedBox(height: 20),  // 버튼과 결과 텍스트 사이에 여백 추가
-              // 스캔된 결과 또는 안내 메시지 표시
-              Text(
-                barcode.isEmpty ? 'Scan a code' : 'Scanned code: $barcode',
-                textAlign: TextAlign.center,
+              child: Text(
+                'ISBN 번호 직접 입력하기',
+                style: TextStyle(color: Color(0xFF789C49)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

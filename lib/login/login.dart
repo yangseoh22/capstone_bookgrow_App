@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'mybooks.dart'; // 나의 도서 페이지
+import '../mybooks/mybooks.dart'; // 나의 도서 페이지
 import 'signup.dart'; // 회원가입 페이지
 
 class LoginPage extends StatelessWidget {

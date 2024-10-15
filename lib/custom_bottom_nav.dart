@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'mybooks.dart';
-import 'timer.dart';
-import 'recommendation.dart';
-import 'profile.dart';
+import 'mybooks/mybooks.dart';
+import 'reading/timer.dart';
+import 'recommend/recommendation.dart';
+import 'mypages/profile.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   final int selectedIndex;
