@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../custom_bottom_nav.dart';
+import 'camera_page.dart'; // 카메라 페이지를 import
 
 class Recommendation extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _RecommendationPageState extends State<Recommendation> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
             Text(
               '감정을 인식하기 위해 본인의 감정을 잘 표현하는 표정을 찍어보세요. 도서를 추천해드립니다!',
               style: TextStyle(
@@ -39,7 +40,10 @@ class _RecommendationPageState extends State<Recommendation> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // 사진 촬영 또는 업로드 기능 추가
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CameraPage()),
+                  );
                 },
                 icon: Icon(Icons.camera_alt, color: Color(0xFF789C49)),
                 label: Text(
@@ -58,16 +62,16 @@ class _RecommendationPageState extends State<Recommendation> {
             ),
             SizedBox(height: 20),
             Divider(
-              color: Colors.grey, // 선의 색상
-              thickness: 1, // 선의 두께
-              indent: 10, // 왼쪽 여백
-              endIndent: 10, // 오른쪽 여백
+              color: Colors.grey,
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
             ),
             SizedBox(height: 10),
             Text(
               '감정 키워드를 선택해보세요. 도서를 추천해드립니다!',
               style: TextStyle(
-                color: Colors.grey[600], // 설명 텍스트 색상
+                color: Colors.grey[600],
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
@@ -78,10 +82,10 @@ class _RecommendationPageState extends State<Recommendation> {
                   RadioListTile<String>(
                     title: Text('행복'),
                     value: '행복',
-                    groupValue: _selectedEmotion, // 현재 선택된 값
+                    groupValue: _selectedEmotion,
                     onChanged: (value) {
                       setState(() {
-                        _selectedEmotion = value!; // 선택된 값을 업데이트
+                        _selectedEmotion = value!;
                       });
                     },
                   ),
@@ -132,7 +136,7 @@ class _RecommendationPageState extends State<Recommendation> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // 텍스트로 감정기반 도서 추천 로직 추간
+                  // 도서 추천 로직 추가
                 },
                 label: Text(
                   '감정 키워드로 도서 추천 받기',
