@@ -1,15 +1,155 @@
 import 'package:flutter/material.dart';
 import '../custom_bottom_nav.dart';
 
-class Recommendation extends StatelessWidget {
+class Recommendation extends StatefulWidget {
+  @override
+  _RecommendationPageState createState() => _RecommendationPageState();
+}
+
+class _RecommendationPageState extends State<Recommendation> {
+  String _selectedEmotion = '행복'; // 초기값 설정
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('추천'),
-      ),
-      body: Center(
-        child: Text('추천 페이지입니다.'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 30),
+            Text(
+              '도서 추천',
+              style: TextStyle(
+                color: Color(0xFF789C49), // 초록색 텍스트
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20,),
+            Text(
+              '감정을 인식하기 위해 본인의 감정을 잘 표현하는 표정을 찍어보세요. 도서를 추천해드립니다!',
+              style: TextStyle(
+                color: Colors.grey[600], // 설명 텍스트 색상
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // 사진 촬영 또는 업로드 기능 추가
+                },
+                icon: Icon(Icons.camera_alt, color: Color(0xFF789C49)),
+                label: Text(
+                  '표정 촬영하러 가기',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF789C49)),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFF1F4E8),
+                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20),
+                  side: BorderSide(color: Color(0xFF789C49)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Divider(
+              color: Colors.grey, // 선의 색상
+              thickness: 1, // 선의 두께
+              indent: 10, // 왼쪽 여백
+              endIndent: 10, // 오른쪽 여백
+            ),
+            SizedBox(height: 10),
+            Text(
+              '감정 키워드를 선택해보세요. 도서를 추천해드립니다!',
+              style: TextStyle(
+                color: Colors.grey[600], // 설명 텍스트 색상
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  RadioListTile<String>(
+                    title: Text('행복'),
+                    value: '행복',
+                    groupValue: _selectedEmotion, // 현재 선택된 값
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEmotion = value!; // 선택된 값을 업데이트
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('증오'),
+                    value: '증오',
+                    groupValue: _selectedEmotion,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEmotion = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('슬픔'),
+                    value: '슬픔',
+                    groupValue: _selectedEmotion,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEmotion = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('답답'),
+                    value: '답답',
+                    groupValue: _selectedEmotion,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEmotion = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('생각없음'),
+                    value: '생각없음',
+                    groupValue: _selectedEmotion,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedEmotion = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  // 텍스트로 감정기반 도서 추천 로직 추간
+                },
+                label: Text(
+                  '감정 키워드로 도서 추천 받기',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF789C49)),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFF1F4E8),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  side: BorderSide(color: Color(0xFF789C49)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: CustomBottomNavBar(selectedIndex: 2),
     );
