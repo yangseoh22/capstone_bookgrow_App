@@ -39,7 +39,7 @@ class _MyBooksState extends State<MyBooks> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   side: BorderSide(
                     color: Color(0xFF789C49),
                     width: 1.0,
@@ -114,23 +114,41 @@ class _MyBooksState extends State<MyBooks> {
               child: ListView.builder(
                 itemCount: 10, // 샘플 데이터 수
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Container(
-                      width: 50,
-                      height: 50,
-                      color: Colors.grey, // 책 표지 위치
-                      child: Center(child: Text('책표지')),
+                  return Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Colors.grey), // 위쪽 테두리
+                        left: BorderSide(color: Colors.grey), // 왼쪽 테두리
+                        right: BorderSide(color: Colors.grey), // 오른쪽 테두리
+                      ),
                     ),
-                    title: Text(
-                      '도서제목입니다.',
-                      style: TextStyle(
-                        color: Colors.grey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0), // 내부 여백
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 60,
+                            color: Colors.grey, // 책 표지 위치
+                            child: Center(child: Text('책표지')),
+                          ),
+                          SizedBox(width: 20), // 이미지와 텍스트 사이의 간격
+                          Expanded(
+                            child: Text(
+                              '도서제목입니다.',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
                 },
               ),
             ),
+            SizedBox(height: 10),
           ],
         ),
       ),

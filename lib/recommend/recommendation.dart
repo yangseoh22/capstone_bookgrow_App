@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../custom_bottom_nav.dart';
 import 'camera_page.dart'; // 카메라 페이지를 import
+import 'recommend_book.dart'; // recommend_book 페이지 가져오기
 
 class Recommendation extends StatefulWidget {
   @override
@@ -136,7 +137,11 @@ class _RecommendationPageState extends State<Recommendation> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // 도서 추천 로직 추가
+                  // 도서 추천 결과 페이지로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RecommendBookPage()),
+                  );
                 },
                 label: Text(
                   '감정 키워드로 도서 추천 받기',
