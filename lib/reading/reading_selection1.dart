@@ -73,35 +73,44 @@ class _ReadingSelectionPage1State extends State<ReadingSelectionPage1> {
               child: ListView.builder(
                 itemCount: 10, // 도서 목록 수 예시
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.grey), // 위쪽 테두리
-                        left: BorderSide(color: Colors.grey), // 왼쪽 테두리
-                        right: BorderSide(color: Colors.grey), // 오른쪽 테두리
+                  return GestureDetector(
+                    onTap: () {
+                      // 책 항목을 클릭하면 ReadingSelectionPage2로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReadingSelectionPage2()),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.grey), // 위쪽 테두리
+                          left: BorderSide(color: Colors.grey), // 왼쪽 테두리
+                          right: BorderSide(color: Colors.grey), // 오른쪽 테두리
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0), // 내부 여백
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 50,
-                            height: 60,
-                            color: Colors.grey, // 책 표지 위치
-                            child: Center(child: Text('책표지')),
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: Text(
-                              '도서제목입니다.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[600],
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0), // 내부 여백
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 60,
+                              color: Colors.grey, // 책 표지 위치
+                              child: Center(child: Text('책표지')),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Text(
+                                '도서제목입니다.',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -115,7 +124,7 @@ class _ReadingSelectionPage1State extends State<ReadingSelectionPage1> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                   backgroundColor: Color(0xFFF1F4E8),
                   side: BorderSide(color: Color(0xFF789C49)),
                   shape: RoundedRectangleBorder(
@@ -126,8 +135,7 @@ class _ReadingSelectionPage1State extends State<ReadingSelectionPage1> {
                   '이전으로 돌아가기',
                   style: TextStyle(
                     color: Color(0xFF789C49),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
               ),

@@ -50,7 +50,9 @@ class _MyBooksState extends State<MyBooks> {
                 ),
                 child: Text(
                   '새로운 도서 등록하러 가기',
-                  style: TextStyle(fontSize: 16, color: Color(0xFF789C49)),
+                  style: TextStyle(fontSize: 18, color: Color(0xFF789C49),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

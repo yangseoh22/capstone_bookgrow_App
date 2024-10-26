@@ -32,17 +32,17 @@ class Timer extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 70, vertical: 40),
+                  padding: EdgeInsets.symmetric(horizontal: 70, vertical: 20),
                   side: BorderSide(color: Color(0xFF789C49)),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(25.0),
                   ),
                 ),
-                icon: Icon(Icons.timer, color: Color(0xFF789C49)),
+                icon: Icon(Icons.timer, color: Color(0xFF789C49), size: 50),
                 label: Text(
-                  '리딩 타이머',
+                  '리딩 타이머\n도서 선택하기',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     color: Color(0xFF789C49),
                     fontWeight: FontWeight.bold,
                   ),
@@ -110,6 +110,7 @@ class Timer extends StatelessWidget {
                             icon: Icon(
                               Icons.timer,
                               color: Color(0xFF789C49),
+                              size: 30,
                             ),
                             onPressed: () {
                               Navigator.push(
