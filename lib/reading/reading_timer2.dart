@@ -72,7 +72,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
             // 도서명
             Text(
               '도서명 : 도서제목입니다',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             SizedBox(height: 70),
 
@@ -106,7 +106,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
             // 누적 독서 시간
             Text(
               '이 도서의 누적 독서 시간 : 00: 00 : 00',
-              style: TextStyle(fontSize: 14, color: Colors.black),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
             SizedBox(height: 10),
 
@@ -115,7 +115,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
               children: [
                 Text(
                   '종료 시점 페이지 : ',
-                  style: TextStyle(fontSize: 14),
+                  style: TextStyle(fontSize: 14, color:Colors.grey[600]),
                 ),
                 Expanded(
                   child: TextField(
@@ -134,7 +134,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
             // 독서 후 느낀점 입력 필드
             Text(
               '독서 후 느낀점 :',
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
             SizedBox(height: 10),
             TextField(

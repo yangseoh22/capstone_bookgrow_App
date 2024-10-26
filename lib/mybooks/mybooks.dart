@@ -137,7 +137,8 @@ class _MyBooksState extends State<MyBooks> {
                             child: Text(
                               '도서제목입니다.',
                               style: TextStyle(
-                                color: Colors.grey,
+                                fontSize: 16,
+                                color: Colors.grey[600],
                               ),
                             ),
                           ),

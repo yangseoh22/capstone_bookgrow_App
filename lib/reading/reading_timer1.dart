@@ -109,7 +109,7 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       '도서명 : 도서제목입니다',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                   ),
                   SizedBox(height: 160),
