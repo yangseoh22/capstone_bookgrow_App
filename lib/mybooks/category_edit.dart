@@ -44,13 +44,20 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('카테고리 수정'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 50),
+            Text(
+              '카테고리 수정',
+              style: TextStyle(
+                color: Color(0xFF789C49),
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             // 카테고리 리스트
             Expanded(
               child: ListView.builder(
@@ -77,7 +84,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                 ),
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 40),
             // 뒤로 가기 버튼
             Align(
               alignment: Alignment.center,
@@ -85,7 +92,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                 onPressed: _goBack, // 뒤로 가기 기능 추가
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 18),
+                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                   side: BorderSide(color: Color(0xFF789C49), width: 1.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -97,6 +104,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                 ),
               ),
             ),
+            SizedBox(height: 30),
           ],
         ),
       ),

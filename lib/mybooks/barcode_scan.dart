@@ -154,7 +154,7 @@ class _BookScannerPageState extends State<BookScannerPage> {
                 onPressed: scanBarcode,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 25),
                   side: BorderSide(color: Color(0xFF789C49), width: 1.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -162,7 +162,9 @@ class _BookScannerPageState extends State<BookScannerPage> {
                 ),
                 child: Text(
                   '카메라로 바코드 인식하기',
-                  style: TextStyle(fontSize: 16, color: Color(0xFF789C49)),
+                  style: TextStyle(fontSize: 18, color: Color(0xFF789C49),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -173,7 +175,7 @@ class _BookScannerPageState extends State<BookScannerPage> {
                 onPressed: _showIsbnInputDialog,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 25),
                   side: BorderSide(color: Color(0xFF789C49), width: 1.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -181,7 +183,9 @@ class _BookScannerPageState extends State<BookScannerPage> {
                 ),
                 child: Text(
                   'ISBN 번호 직접 입력하기',
-                  style: TextStyle(fontSize: 16, color: Color(0xFF789C49)),
+                  style: TextStyle(fontSize: 18, color: Color(0xFF789C49),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

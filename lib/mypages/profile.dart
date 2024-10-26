@@ -5,9 +5,6 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('프로필'),
-      // ),
       body: Center(  // 전체 사각형들을 중앙에 배치
         child: Column(
           mainAxisSize: MainAxisSize.min,  // Column의 높이를 내용에 맞게 최소화

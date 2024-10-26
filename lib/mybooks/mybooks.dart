@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'category_edit.dart';
 import '../custom_bottom_nav.dart';
 import 'barcode_scan.dart'; // 바코드 스캔 페이지
+import 'view_book.dart'; // 도서 정보 페이지 가져오기
 
 class MyBooks extends StatefulWidget {
   @override
@@ -32,11 +33,20 @@ class _MyBooksState extends State<MyBooks> {
             ),
             SizedBox(height: 20),
             Align(
-              alignment: Alignment.center, // 가로 방향으로 중앙 정렬
-              child: ElevatedButton(
+              alignment: Alignment.center,
+              child: ElevatedButton.icon(
                 onPressed: () {
                   Get.to(() => BookScannerPage());  // 새로운 도서 등록 로직 추가
                 },
+                icon: Icon(Icons.add, color: Color(0xFF789C49)), // 아이콘 추가
+                label: Text(
+                  '새로운 도서 등록하러 가기',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF789C49),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -47,12 +57,7 @@ class _MyBooksState extends State<MyBooks> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                ),
-                child: Text(
-                  '새로운 도서 등록하러 가기',
-                  style: TextStyle(fontSize: 18, color: Color(0xFF789C49),
-                    fontWeight: FontWeight.bold,
-                  ),
+
                 ),
               ),
             ),
@@ -114,37 +119,48 @@ class _MyBooksState extends State<MyBooks> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 10, // 샘플 데이터 수
+                itemCount: 10, // 도서 목록 수 예시
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.grey), // 위쪽 테두리
-                        left: BorderSide(color: Colors.grey), // 왼쪽 테두리
-                        right: BorderSide(color: Colors.grey), // 오른쪽 테두리
+                  return GestureDetector(
+                    onTap: () {
+                      // 책 항목을 클릭하면 view_book 페이지로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewBookPage(), // ViewBookPage로 이동
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.grey),
+                          left: BorderSide(color: Colors.grey),
+                          right: BorderSide(color: Colors.grey),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0), // 내부 여백
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 50,
-                            height: 60,
-                            color: Colors.grey, // 책 표지 위치
-                            child: Center(child: Text('책표지')),
-                          ),
-                          SizedBox(width: 20), // 이미지와 텍스트 사이의 간격
-                          Expanded(
-                            child: Text(
-                              '도서제목입니다.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[600],
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0), // 내부 여백
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 60,
+                              color: Colors.grey, // 책 표지 위치
+                              child: Center(child: Text('책표지')),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Text(
+                                '도서제목입니다.',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );

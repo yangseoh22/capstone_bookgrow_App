@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'reading_timer1.dart';
+import 'mybooks.dart';
 
-class ReadingSelectionPage2 extends StatelessWidget {
+class ViewBookPage extends StatelessWidget {
   final String bookTitle;
   final String author;
   final String publisher;
@@ -9,7 +9,7 @@ class ReadingSelectionPage2 extends StatelessWidget {
   final String isbn;
   final List<String> thoughts; // "나의 생각"을 담는 리스트
 
-  ReadingSelectionPage2({
+  ViewBookPage({
     this.bookTitle = '도서제목입니다.',
     this.author = '홍길동',
     this.publisher = '출판사',
@@ -17,7 +17,8 @@ class ReadingSelectionPage2 extends StatelessWidget {
     this.isbn = '123456789123',
     this.thoughts = const ["표지가 흥미로워서 시작했다. 생각보다 재밌어서 잘 고른듯!",
       "내가 주인공이라면 @~!#%#!@# 이렇게 해봤을텐데..",
-      "흡끅끆.. 다 생각이 있었던거야!ㅜㅜㅜㅜㅜㅜ"],
+      "흡끅끆.. 다 생각이 있었던거야!ㅜㅜㅜㅜㅜㅜ",
+      "이런 반전이 있다니! 당장 뒷 내용을 읽고 싶지만 학교를 가기 위해 참는다.."],
   });
 
   @override
@@ -30,39 +31,11 @@ class ReadingSelectionPage2 extends StatelessWidget {
           children: [
             SizedBox(height: 20),
             Text(
-              '리딩 타이머',
+              '나의 도서',
               style: TextStyle(
                 color: Color(0xFF789C49),
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ReadingTimerPage1()),
-                  );
-                },
-                icon: Icon(Icons.timer, color: Color(0xFF789C49)),
-                label: Text(
-                  '리딩 타이머 시작하기',
-                  style: TextStyle(
-                    color: Color(0xFF789C49),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  side: BorderSide(color: Color(0xFF789C49)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                ),
               ),
             ),
             SizedBox(height: 20),
