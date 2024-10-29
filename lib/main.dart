@@ -6,13 +6,14 @@ void main() {
   runApp(MyApp());
 }
 
-// yoondahn fork test code
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: LoginPage(), // 시작 페이지를 로그인 페이지로 설정
+      initialRoute: '/login', // 초기 경로를 /login으로 설정
+      getPages: [
+        GetPage(name: '/login', page: () => LoginPage()), // 로그인 페이지
+      ],
     );
   }
 }
