@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'Controller/UserController.dart';
 import 'login/login.dart'; // 로그인 페이지
 
-// fork test code
-
 void main() {
+  Get.put(UserController()); // UserController를 전역으로 등록
+  Get.put(UserController()); // UserController 인스턴스를 GetX에 등록
   runApp(MyApp());
 }
 
