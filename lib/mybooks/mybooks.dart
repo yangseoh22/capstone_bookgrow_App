@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller/UserController.dart';
+import '../serverConfig.dart';
 import 'category_edit.dart';
 import '../custom_bottom_nav.dart';
 import 'barcode_scan.dart'; // 바코드 스캔 페이지
@@ -13,6 +17,48 @@ class MyBooks extends StatefulWidget {
 class _MyBooksState extends State<MyBooks> {
   List<String> categories = ['전체', '소설', '비소설', '과학', '기타'];
   String dropdownValue = '전체';
+  List<Map<String, dynamic>> books = []; // 도서 목록 저장을 위한 리스트
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBooks(); // 도서 목록 불러오기
+  }
+
+  // 서버에서 도서 목록을 가져오는 함수
+  Future<void> fetchBooks() async {
+    final userController = Get.find<UserController>();
+    final userId = userController.userId.value;
+
+    final url = Uri.parse('$SERVER_URL/book/getAll?userId=$userId');
+    print("도서 목록 요청 URL: $url"); // 요청 URL 로그
+
+    try {
+      final response = await http.get(url);
+
+      print("도서 목록 응답 상태 코드: ${response.statusCode}"); // 응답 상태 코드 로그
+      print("도서 목록 응답 본문: ${utf8.decode(response.bodyBytes)}"); // 응답 본문 로그
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          books = data.map((book) {
+            return {
+              'title': book['title'],
+              'image_url': book['image_url'],
+            };
+          }).toList();
+        });
+        print("도서 목록이 성공적으로 불러와졌습니다. 총 ${books.length}권"); // 응답 성공 시 로그
+      } else {
+        Get.snackbar("오류", "도서 목록을 불러오지 못했습니다.");
+        print("서버 오류로 인해 도서 목록을 불러오지 못했습니다."); // 서버 오류 로그
+      }
+    } catch (error) {
+      print("도서 목록 요청 오류 발생: $error"); // 요청 오류 로그
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +82,7 @@ class _MyBooksState extends State<MyBooks> {
               alignment: Alignment.center,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Get.to(() => BookScannerPage());  // 새로운 도서 등록 로직 추가
+                  Get.to(() => BookScannerPage()); // 새로운 도서 등록 로직 추가
                 },
                 icon: Icon(Icons.add, color: Color(0xFF789C49)), // 아이콘 추가
                 label: Text(
@@ -57,7 +103,6 @@ class _MyBooksState extends State<MyBooks> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-
                 ),
               ),
             ),
@@ -97,8 +142,7 @@ class _MyBooksState extends State<MyBooks> {
                 DropdownButton<String>(
                   value: dropdownValue,
                   icon: Icon(Icons.arrow_drop_down),
-                  items: categories
-                      .map<DropdownMenuItem<String>>((String value) {
+                  items: categories.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(
@@ -119,15 +163,15 @@ class _MyBooksState extends State<MyBooks> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 10, // 도서 목록 수 예시
+                itemCount: books.length,
                 itemBuilder: (context, index) {
+                  final book = books[index];
                   return GestureDetector(
                     onTap: () {
-                      // 책 항목을 클릭하면 view_book 페이지로 이동
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ViewBookPage(), // ViewBookPage로 이동
+                          builder: (context) => ViewBookPage(),
                         ),
                       );
                     },
@@ -137,22 +181,25 @@ class _MyBooksState extends State<MyBooks> {
                           top: BorderSide(color: Colors.grey),
                           left: BorderSide(color: Colors.grey),
                           right: BorderSide(color: Colors.grey),
+                          bottom: BorderSide(color: Colors.grey),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(12.0), // 내부 여백
+                        padding: const EdgeInsets.all(12.0),
                         child: Row(
                           children: [
                             Container(
                               width: 50,
                               height: 60,
-                              color: Colors.grey, // 책 표지 위치
-                              child: Center(child: Text('책표지')),
+                              color: Colors.grey,
+                              child: (book['image_url'] != null && book['image_url'] != 'http://cover.nl.go.kr/')
+                                  ? Image.network(book['image_url'])
+                                  : Image.asset('assets/images/img_none.png'), // 기본 이미지
                             ),
                             SizedBox(width: 20),
                             Expanded(
                               child: Text(
-                                '도서제목입니다.',
+                                book['title'],
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey[600],
@@ -171,7 +218,7 @@ class _MyBooksState extends State<MyBooks> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(selectedIndex: 0), // 하단 네비게이션 바
+      bottomNavigationBar: CustomBottomNavBar(selectedIndex: 0),
     );
   }
 }

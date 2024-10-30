@@ -87,6 +87,7 @@ class _ReadingSelectionPage1State extends State<ReadingSelectionPage1> {
                           top: BorderSide(color: Colors.grey), // 위쪽 테두리
                           left: BorderSide(color: Colors.grey), // 왼쪽 테두리
                           right: BorderSide(color: Colors.grey), // 오른쪽 테두리
+                          bottom: BorderSide(color: Colors.grey), // 오른쪽 테두리
                         ),
                       ),
                       child: Padding(

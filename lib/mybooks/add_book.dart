@@ -1,15 +1,83 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller/UserController.dart'; // UserController 가져오기
+import '../serverConfig.dart'; // 서버 주소 설정 파일
 
 class BookInfoPage extends StatelessWidget {
   final Map<String, dynamic> bookInfo;
   final bool isCompleted;
   final Function onCompletedChange;
 
+  final TextEditingController totalPageController = TextEditingController();
+  final TextEditingController currentPageController = TextEditingController();
+
   BookInfoPage({
     required this.bookInfo,
     required this.isCompleted,
     required this.onCompletedChange,
   });
+
+  // 서버에 도서 등록 요청을 보내는 함수
+  Future<void> _registerBook(BuildContext context) async {
+    // 필드 값 가져오기
+    final totalPage = totalPageController.text.trim();
+    final currentPage = currentPageController.text.trim();
+
+    // 유효성 검사
+    if (totalPage.isEmpty) {
+      Get.snackbar("오류", "총 쪽 수를 입력해주세요.");
+      return;
+    }
+    if (!isCompleted && currentPage.isEmpty) {
+      Get.snackbar("오류", "현재까지 읽은 쪽 수를 입력해주세요.");
+      return;
+    }
+
+    // UserController 인스턴스에서 userId 가져오기
+    final userController = Get.find<UserController>();
+    final userId = userController.userId.value;
+
+    // 도서 데이터 설정
+    Map<String, dynamic> bookData = {
+      "title": bookInfo['title'],
+      "author": bookInfo['author'],
+      "publisher": bookInfo['publisher'],
+      "published_year": bookInfo['publication_year'],
+      "isbn": bookInfo['isbn'],
+      "total_page": totalPage,
+      "current_page": currentPage,
+      "format": bookInfo['format'] ?? "",
+      "image_url": bookInfo['image_url'],
+      "genre": bookInfo['genre'] ?? "",
+      "is_completed": isCompleted,
+    };
+
+    // 도서 등록 엔드포인트 URL에 userId 추가
+    final url = Uri.parse("$SERVER_URL/book/register?userId=$userId");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(bookData),
+      );
+
+      print("도서 등록 응답 상태 코드: ${response.statusCode}");
+      print("도서 등록 응답 본문: ${utf8.decode(response.bodyBytes)}");
+
+      if (response.statusCode == 200) {
+        Get.snackbar("성공", "도서가 등록되었습니다!");
+        Navigator.pop(context); // 등록 완료 후 이전 화면으로 돌아감
+      } else {
+        Get.snackbar("오류", "도서 등록에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      print("도서 등록 요청 오류 발생: $error");
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +132,13 @@ class BookInfoPage extends StatelessWidget {
                   Expanded(child: Text('이 도서의 총 쪽 수를 입력하세요.')),
                   SizedBox(width: 10),
                   Container(
-                    width: 50, // 필드의 너비
+                    width: 50,
                     child: TextField(
+                      controller: totalPageController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        isDense: true, // 내부 여백을 줄임
+                        isDense: true,
                         contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 3),
                       ),
                     ),
@@ -114,10 +183,11 @@ class BookInfoPage extends StatelessWidget {
                     Container(
                       width: 50,
                       child: TextField(
+                        controller: currentPageController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          isDense: true, // 내부 여백을 줄임
+                          isDense: true,
                           contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 3),
                         ),
                       ),
@@ -130,7 +200,7 @@ class BookInfoPage extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => _registerBook(context), // 도서 등록 함수 호출
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFF1F4E8),
                     padding: EdgeInsets.symmetric(horizontal: 70, vertical: 12),
