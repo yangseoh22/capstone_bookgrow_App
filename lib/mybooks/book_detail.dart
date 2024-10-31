@@ -1,25 +1,67 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'mybooks.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller.dart'; // 통합 Controller
+import '../serverConfig.dart';
 
-class ViewBookPage extends StatelessWidget {
-  final String bookTitle;
-  final String author;
-  final String publisher;
-  final String publishedDate;
-  final String isbn;
-  final List<String> thoughts; // "나의 생각"을 담는 리스트
+class ViewBookPage extends StatefulWidget {
+  @override
+  _ViewBookPageState createState() => _ViewBookPageState();
+}
 
-  ViewBookPage({
-    this.bookTitle = '도서제목입니다.',
-    this.author = '홍길동',
-    this.publisher = '출판사',
-    this.publishedDate = 'YYYY.MM.DD',
-    this.isbn = '123456789123',
-    this.thoughts = const ["표지가 흥미로워서 시작했다. 생각보다 재밌어서 잘 고른듯!",
-      "내가 주인공이라면 @~!#%#!@# 이렇게 해봤을텐데..",
-      "흡끅끆.. 다 생각이 있었던거야!ㅜㅜㅜㅜㅜㅜ",
-      "이런 반전이 있다니! 당장 뒷 내용을 읽고 싶지만 학교를 가기 위해 참는다.."],
-  });
+class _ViewBookPageState extends State<ViewBookPage> {
+  final Controller controller = Get.find<Controller>();
+  String bookTitle = '도서제목입니다.';
+  String author = '홍길동';
+  String publisher = '출판사';
+  String publishedDate = 'YYYY.MM.DD';
+  String isbn = '123456789123';
+  String imageUrl = 'http://cover.nl.go.kr/';
+  List<String> thoughts = []; // 서버에서 가져올 "나의 생각"을 담는 리스트
+
+  @override
+  void initState() {
+    super.initState();
+    getBookDetails(); // 도서 상세 정보를 가져오는 함수 호출
+  }
+
+  // 서버에 도서 조회 요청을 보내는 함수
+  Future<void> getBookDetails() async {
+    final bookId = controller.bookId.value;
+
+    final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
+    print("도서 조회 요청 URL: $url"); // 요청 URL 로그
+
+    try {
+      final response = await http.get(url);
+
+      print("도서 조회 응답 상태 코드: ${response.statusCode}");
+      print("도서 조회 응답 본문: ${utf8.decode(response.bodyBytes)}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          bookTitle = data['title'] ?? '도서제목입니다.';
+          author = data['author'] ?? '저자';
+          publisher = data['publisher'] ?? '출판사';
+          publishedDate = data['published_year'] ?? 'YYYY.MM.DD';
+          isbn = data['isbn'] ?? '123456789123';
+          imageUrl = data['image_url'] ?? 'http://cover.nl.go.kr/';
+          thoughts = List<String>.from(data['thoughts'] ?? []);
+        });
+
+        print("도서 정보가 성공적으로 불러와졌습니다.");
+      } else {
+        Get.snackbar("오류", "도서 정보를 불러오지 못했습니다.");
+        print("서버 오류로 인해 도서 정보를 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      print("도서 조회 요청 오류 발생: $error");
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +96,9 @@ class ViewBookPage extends StatelessWidget {
                         width: 50,
                         height: 60,
                         color: Colors.grey,
-                        child: Center(child: Text('책표지')),
+                        child: (imageUrl != 'http://cover.nl.go.kr/')
+                            ? Image.network(imageUrl, fit: BoxFit.cover)
+                            : Image.asset('assets/images/img_none.png'),
                       ),
                       SizedBox(width: 20),
                       Expanded(
@@ -70,7 +114,7 @@ class ViewBookPage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text('지은이: $author', style: TextStyle(color: Colors.grey[700])),
+                  Text('저자: $author', style: TextStyle(color: Colors.grey[700])),
                   Text('발행처: $publisher', style: TextStyle(color: Colors.grey[700])),
                   Text('발행(예정)일: $publishedDate', style: TextStyle(color: Colors.grey[700])),
                   Text('ISBN: $isbn', style: TextStyle(color: Colors.grey[700])),
