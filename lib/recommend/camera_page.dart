@@ -139,8 +139,28 @@ class DisplayPictureScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center, // 가로 중앙 정렬
         children: [
           Expanded(
-            child: Center( // 이미지를 중앙 정렬
-              child: Image.file(File(imagePath)),
+            child: Stack(
+              alignment: Alignment.center, // Stack의 자식들을 중앙에 정렬
+              children: [
+                Center( // 이미지를 중앙 정렬
+                  child: Image.file(File(imagePath)),
+                ),
+                Positioned(
+                  bottom: 20, // 텍스트 위치 조정 (아래에서 20px 위로)
+                  child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    color: Colors.black.withOpacity(0.5), // 텍스트 배경 반투명 설정
+                    child: Text(
+                      '인지된 감정 : 행복',  // ML 통신 필요
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -176,4 +196,3 @@ class DisplayPictureScreen extends StatelessWidget {
     );
   }
 }
-
