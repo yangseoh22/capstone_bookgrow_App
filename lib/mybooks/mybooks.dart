@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../Controller/UserController.dart';
+import '../Controller.dart'; // 통합 Controller
 import '../serverConfig.dart';
 import 'category_edit.dart';
 import '../custom_bottom_nav.dart';
 import 'barcode_scan.dart'; // 바코드 스캔 페이지
-import 'view_book.dart'; // 도서 정보 페이지 가져오기
+import 'book_detail.dart'; // 도서 정보 페이지 가져오기
 
 class MyBooks extends StatefulWidget {
   @override
@@ -15,6 +15,7 @@ class MyBooks extends StatefulWidget {
 }
 
 class _MyBooksState extends State<MyBooks> {
+  final Controller controller = Get.put(Controller());
   List<String> categories = ['전체', '소설', '비소설', '과학', '기타'];
   String dropdownValue = '전체';
   List<Map<String, dynamic>> books = []; // 도서 목록 저장을 위한 리스트
@@ -27,35 +28,36 @@ class _MyBooksState extends State<MyBooks> {
 
   // 서버에서 도서 목록을 가져오는 함수
   Future<void> fetchBooks() async {
-    final userController = Get.find<UserController>();
-    final userId = userController.userId.value;
+    final userId = controller.userId.value;
 
     final url = Uri.parse('$SERVER_URL/book/getAll?userId=$userId');
-    print("도서 목록 요청 URL: $url"); // 요청 URL 로그
+    print("도서 목록 요청 URL: $url");
 
     try {
       final response = await http.get(url);
 
-      print("도서 목록 응답 상태 코드: ${response.statusCode}"); // 응답 상태 코드 로그
-      print("도서 목록 응답 본문: ${utf8.decode(response.bodyBytes)}"); // 응답 본문 로그
+      print("도서 목록 응답 상태 코드: ${response.statusCode}");
+      print("도서 목록 응답 본문: ${utf8.decode(response.bodyBytes)}");
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           books = data.map((book) {
+            print("도서 데이터: $book"); // 각 도서 데이터 로그 출력
             return {
+              'bookId': book['id'],
               'title': book['title'],
               'image_url': book['image_url'],
             };
           }).toList();
         });
-        print("도서 목록이 성공적으로 불러와졌습니다. 총 ${books.length}권"); // 응답 성공 시 로그
+        print("도서 목록이 성공적으로 불러와졌습니다. 총 ${books.length}권");
       } else {
         Get.snackbar("오류", "도서 목록을 불러오지 못했습니다.");
-        print("서버 오류로 인해 도서 목록을 불러오지 못했습니다."); // 서버 오류 로그
+        print("서버 오류로 인해 도서 목록을 불러오지 못했습니다.");
       }
     } catch (error) {
-      print("도서 목록 요청 오류 발생: $error"); // 요청 오류 로그
+      print("도서 목록 요청 오류 발생: $error");
       Get.snackbar("오류", "네트워크 요청 실패: $error");
     }
   }
@@ -82,7 +84,7 @@ class _MyBooksState extends State<MyBooks> {
               alignment: Alignment.center,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Get.to(() => BookScannerPage()); // 새로운 도서 등록 로직 추가
+                  Get.to(() => BookScannerPage()); // 도서 등록
                 },
                 icon: Icon(Icons.add, color: Color(0xFF789C49)), // 아이콘 추가
                 label: Text(
@@ -168,6 +170,9 @@ class _MyBooksState extends State<MyBooks> {
                   final book = books[index];
                   return GestureDetector(
                     onTap: () {
+                      // Controller에 bookId 저장
+                      print("선택한 도서 bookId: ${book['bookId']}");
+                      controller.setBookId(book['bookId']);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -214,7 +219,6 @@ class _MyBooksState extends State<MyBooks> {
                 },
               ),
             ),
-            SizedBox(height: 10),
           ],
         ),
       ),

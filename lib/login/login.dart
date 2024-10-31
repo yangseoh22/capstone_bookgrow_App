@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../Controller/UserController.dart';
+import '../Controller.dart';
 import '../mybooks/mybooks.dart'; // 나의 도서 페이지
 import 'signup.dart'; // 회원가입 페이지
 import '../serverConfig.dart';
@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
           print("로그인 성공 - userId: $userId");
 
           // UserController에 userId 저장
-          final userController = Get.find<UserController>();
+          final userController = Get.find<Controller>();
           userController.setUserId(userId);
           print("UserController에 userId 설정 완료");
 

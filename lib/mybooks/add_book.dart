@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../Controller/UserController.dart'; // UserController 가져오기
+import '../Controller.dart'; // Controller 가져오기
 import '../serverConfig.dart'; // 서버 주소 설정 파일
 
 class BookInfoPage extends StatelessWidget {
@@ -36,7 +36,7 @@ class BookInfoPage extends StatelessWidget {
     }
 
     // UserController 인스턴스에서 userId 가져오기
-    final userController = Get.find<UserController>();
+    final userController = Get.find<Controller>();
     final userId = userController.userId.value;
 
     // 도서 데이터 설정
