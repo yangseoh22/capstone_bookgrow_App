@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../Controller.dart'; // Controller 가져오기
-import '../serverConfig.dart'; // 서버 주소 설정 파일
+import '../Controller.dart';
+import '../serverConfig.dart';
 
 class BookInfoPage extends StatelessWidget {
   final Map<String, dynamic> bookInfo;
@@ -23,19 +23,16 @@ class BookInfoPage extends StatelessWidget {
   Future<void> _registerBook(BuildContext context) async {
     // 필드 값 가져오기
     final totalPage = totalPageController.text.trim();
-    final currentPage = currentPageController.text.trim();
+    final currentPage = currentPageController.text.trim().isEmpty ? '0' : currentPageController.text.trim();
+    final isCompletedValue = isCompleted ? 'Y' : 'N';
 
     // 유효성 검사
     if (totalPage.isEmpty) {
       Get.snackbar("오류", "총 쪽 수를 입력해주세요.");
       return;
     }
-    if (!isCompleted && currentPage.isEmpty) {
-      Get.snackbar("오류", "현재까지 읽은 쪽 수를 입력해주세요.");
-      return;
-    }
 
-    // UserController 인스턴스에서 userId 가져오기
+    // Controller 인스턴스에서 userId 가져오기
     final userController = Get.find<Controller>();
     final userId = userController.userId.value;
 
@@ -51,11 +48,10 @@ class BookInfoPage extends StatelessWidget {
       "format": bookInfo['format'] ?? "",
       "image_url": bookInfo['image_url'],
       "genre": bookInfo['genre'] ?? "",
-      "is_completed": isCompleted,
     };
 
-    // 도서 등록 엔드포인트 URL에 userId 추가
-    final url = Uri.parse("$SERVER_URL/book/register?userId=$userId");
+    // 도서 등록 엔드포인트 URL
+    final url = Uri.parse("$SERVER_URL/book/register?userId=$userId&isCompleted=$isCompletedValue");
 
     try {
       final response = await http.post(
