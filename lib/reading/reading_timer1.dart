@@ -1,5 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller.dart'; // 통합 Controller
+import '../serverConfig.dart';
 import 'reading_timer2.dart';
 
 class ReadingTimerPage1 extends StatefulWidget {
@@ -8,11 +13,44 @@ class ReadingTimerPage1 extends StatefulWidget {
 }
 
 class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
+  final Controller controller = Get.find<Controller>();
   bool isRunning = false; // 타이머가 실행 중인지 여부
   Timer? _timer; // 타이머 객체
   Duration duration = Duration(seconds: 0); // 타이머 시간
   bool isScreenDimmed = false; // 화면이 어두워졌는지 여부
   Timer? _dimTimer; // 화면을 어둡게 하는 타이머
+  String bookTitle = '도서제목입니다'; // 서버에서 가져올 책 제목
+
+  @override
+  void initState() {
+    super.initState();
+    getBookTitle(); // 서버에서 책 제목 가져오기
+    _startDimTimer(); // 초기화 시 어두워짐 타이머 시작
+  }
+
+  // 서버에서 책 제목을 가져오는 함수
+  Future<void> getBookTitle() async {
+    final bookId = controller.bookId.value;
+    final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
+    print("도서 제목 요청 URL: $url"); // 요청 URL 로그
+
+    try {
+      final response = await http.get(url);
+      print("도서 제목 응답 상태 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          bookTitle = data['title'] ?? '도서제목입니다';
+        });
+        print("도서 제목이 성공적으로 불러와졌습니다.");
+      } else {
+        print("서버 오류로 인해 도서 제목을 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      print("도서 제목 요청 오류 발생: $error");
+    }
+  }
 
   // 타이머 시작
   void _startTimer() {
@@ -59,7 +97,7 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
   void _startDimTimer() {
     _dimTimer = Timer(Duration(seconds: 5), () {
       setState(() {
-        isScreenDimmed = true; // 10초 후 화면을 어둡게
+        isScreenDimmed = true; // 5초 후 화면을 어둡게
       });
     });
   }
@@ -71,12 +109,6 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
       isScreenDimmed = false; // 화면이 밝아짐
     });
     _startDimTimer(); // 새 타이머 시작
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _startDimTimer(); // 초기화 시 어두워짐 타이머 시작
   }
 
   @override
@@ -108,7 +140,7 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '도서명 : 도서제목입니다',
+                      '도서명 : $bookTitle',
                       style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                   ),

@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller.dart'; // 통합 Controller
+import '../serverConfig.dart';
 import 'reading_home.dart';
 
 class ReadingTimerPage2 extends StatefulWidget {
@@ -11,9 +17,70 @@ class ReadingTimerPage2 extends StatefulWidget {
 }
 
 class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
-  // 입력 컨트롤러
+  final Controller controller = Get.find<Controller>();
   final TextEditingController _pageController = TextEditingController();
   final TextEditingController _impressionController = TextEditingController();
+  String bookTitle = '도서제목입니다'; // 서버에서 가져올 책 제목
+  int cumulativeHours = 0;
+  int cumulativeMinutes = 0;
+  int cumulativeSeconds = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getBookTitle(); // 서버에서 도서명 가져오기
+    getCumulativeReadingTime(); // 누적 독서 시간 가져오기
+  }
+
+  // 서버에서 도서명을 가져오는 함수
+  Future<void> getBookTitle() async {
+    final bookId = controller.bookId.value;
+    final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
+    print("도서 조회 요청 URL: $url"); // 요청 URL 로그
+
+    try {
+      final response = await http.get(url);
+      print("도서 조회 응답 상태 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          bookTitle = data['title'] ?? '도서제목입니다';
+        });
+        print("도서명이 성공적으로 불러와졌습니다.");
+      } else {
+        print("서버 오류로 인해 도서명을 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      print("도서 조회 요청 오류 발생: $error");
+    }
+  }
+
+  // 서버에서 누적 독서 시간을 가져오는 함수
+  Future<void> getCumulativeReadingTime() async {
+    final userId = controller.userId.value;
+    final url = Uri.parse('$SERVER_URL/user/get?id=$userId');
+    print("누적 독서 시간 조회 요청 URL: $url");
+
+    try {
+      final response = await http.get(url);
+      print("누적 독서 시간 응답 상태 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          cumulativeHours = data['cumulativeHours'] ?? 0;
+          cumulativeMinutes = data['cumulativeMinutes'] ?? 0;
+          cumulativeSeconds = data['cumulativeSeconds'] ?? 0;
+        });
+        print("누적 독서 시간이 성공적으로 불러와졌습니다.");
+      } else {
+        print("서버 오류로 인해 누적 독서 시간을 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      print("누적 독서 시간 요청 오류 발생: $error");
+    }
+  }
 
   // 시간 포맷을 맞추기 위한 함수
   String _formatDuration(Duration d) {
@@ -43,17 +110,55 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
     );
   }
 
+  // 종료 버튼 눌렀을 때 서버에 데이터를 보내는 함수
+  Future<void> _submitReadingData() async {
+    final bookId = controller.bookId.value;
+    final userId = controller.userId.value;
+    final url = Uri.parse('$SERVER_URL/reading/add?bookId=$bookId&userId=$userId');
+
+    // 읽은 시간 문자열로 변환
+    final totalTime = _formatDuration(widget.duration);
+
+    // 서버에 보낼 데이터 구성
+    Map<String, dynamic> readingData = {
+      "total_time": totalTime,
+      "end_page": int.parse(_pageController.text),
+      "review": _impressionController.text,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(readingData),
+      );
+
+      print("리딩 데이터 전송 응답 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        print("리딩 데이터가 성공적으로 저장되었습니다.");
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Timer()),
+              (route) => false, // 모든 이전 라우트를 제거하여 돌아갈 수 없도록 설정
+        );
+      } else {
+        print("서버 오류로 인해 리딩 데이터를 저장하지 못했습니다.");
+        Get.snackbar("오류", "리딩 데이터를 저장할 수 없습니다.");
+      }
+    } catch (error) {
+      print("리딩 데이터 전송 오류 발생: $error");
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
+
   // 종료 버튼 눌렀을 때 처리
   void _onFinishPressed() {
     if (_pageController.text.isEmpty || _impressionController.text.isEmpty) {
       _showAlertDialog(); // 필드가 비어있으면 경고창 띄우기
     } else {
-      // 필드가 모두 입력된 경우 홈으로 이동
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => Timer()),
-            (route) => false, // 모든 이전 라우트를 제거하여 돌아갈 수 없도록 설정
-      );
+      // 모든 필드가 입력된 경우 서버에 데이터 전송
+      _submitReadingData();
     }
   }
 
@@ -71,7 +176,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
           children: [
             // 도서명
             Text(
-              '도서명 : 도서제목입니다',
+              '도서명 : $bookTitle',
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             SizedBox(height: 70),
@@ -105,7 +210,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
             SizedBox(height: 40),
             // 누적 독서 시간
             Text(
-              '이 도서의 누적 독서 시간 : 00: 00 : 00',
+              '현재 누적 독서 시간 : $cumulativeHours H $cumulativeMinutes M $cumulativeSeconds S',
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
             SizedBox(height: 10),
@@ -115,7 +220,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
               children: [
                 Text(
                   '종료 시점 페이지 : ',
-                  style: TextStyle(fontSize: 14, color:Colors.grey[600]),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 Expanded(
                   child: TextField(
@@ -125,6 +230,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
                     ),
+                    keyboardType: TextInputType.number,
                   ),
                 ),
               ],
