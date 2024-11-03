@@ -52,7 +52,7 @@ class _ProfileState extends State<Profile> {
           nickname = data['nickname'] ?? '닉네임 없음';
           registerId = data['registerId'] ?? '아이디 없음';
           pagesPerDay = int.parse(data['pages_per_day'] ?? '0');
-          timePerPage = data['time_per_page'] ?? '불러오는 중...';
+          timePerPage = data['time_per_page'] ?? '0';
           owned = data['owned'] ?? 0;
           complete = data['complete'] ?? 0;
           flower = data['flower'] ?? 0;
