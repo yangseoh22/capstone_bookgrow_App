@@ -1,9 +1,62 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller.dart';
 import '../custom_bottom_nav.dart';
 import 'reading_selection1.dart';
 import 'reading_timer1.dart';
+import '../serverConfig.dart';
 
-class Timer extends StatelessWidget {
+class Timer extends StatefulWidget {
+  @override
+  _TimerState createState() => _TimerState();
+}
+
+class _TimerState extends State<Timer> {
+  final Controller controller = Get.find<Controller>();
+  List<Map<String, dynamic>> books = []; // 진행 중인 도서 목록을 저장할 리스트
+
+  @override
+  void initState() {
+    super.initState();
+    fetchReadingBooks(); // 진행 중인 도서 목록 가져오기
+  }
+
+  // 서버에서 진행 중인 도서 목록을 가져오는 함수
+  Future<void> fetchReadingBooks() async {
+    final userId = controller.userId.value;
+    final url = Uri.parse('$SERVER_URL/reading/get?userId=$userId');
+    print("진행 중인 도서 목록 요청 URL: $url");
+
+    try {
+      final response = await http.get(url);
+      print("진행 중인 도서 목록 응답 상태 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          books = data.map((book) {
+            return {
+              'bookId': book['bookId'], // bookId 포함
+              'title': book['title'],
+              'image_url': book['image_url'],
+              'current_page': int.parse(book['current_page'] ?? '0'),
+              'total_page': int.parse(book['total_page'] ?? '1'),
+            };
+          }).toList();
+        });
+        print("진행 중인 도서 목록이 성공적으로 불러와졌습니다.");
+      } else {
+        Get.snackbar("오류", "진행 중인 도서 목록을 불러오지 못했습니다.");
+        print("서버 오류로 인해 진행 중인 도서 목록을 불러오지 못했습니다.");
+      }
+    } catch (error) {
+      print("진행 중인 도서 목록 요청 오류 발생: $error");
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +114,15 @@ class Timer extends StatelessWidget {
             SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
-                itemCount: 5, // 샘플 도서 개수
+                itemCount: books.length,
                 itemBuilder: (context, index) {
+                  final book = books[index];
+                  final progress = (book['current_page'] / book['total_page']).clamp(0.0, 1.0);
+
+                  final imageUrl = (book['image_url'] == null || book['image_url'] == 'http://cover.nl.go.kr/')
+                      ? 'assets/images/img_none.png'
+                      : book['image_url'];
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Container(
@@ -76,13 +136,10 @@ class Timer extends StatelessWidget {
                           Container(
                             width: 50,
                             height: 60,
-                            color: Colors.grey, // 책 표지 위치
-                            child: Center(
-                              child: Text(
-                                '책표지',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            color: Colors.grey,
+                            child: imageUrl == 'assets/images/img_none.png'
+                                ? Image.asset(imageUrl)
+                                : Image.network(imageUrl, fit: BoxFit.cover),
                           ),
                           SizedBox(width: 10),
                           Expanded(
@@ -90,7 +147,7 @@ class Timer extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '도서제목입니다.',
+                                  book['title'] ?? '제목 없음',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey[600],
@@ -98,7 +155,7 @@ class Timer extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10),
                                 LinearProgressIndicator(
-                                  value: 0.5, // 진행도 예시
+                                  value: progress,
                                   color: Color(0xFF789C49),
                                   backgroundColor: Colors.grey[300],
                                 ),
@@ -113,10 +170,17 @@ class Timer extends StatelessWidget {
                               size: 30,
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                context,  //읽고 있던 책은 바로 타이머 시작으로 넘어감
-                                MaterialPageRoute(builder: (context) => ReadingTimerPage1()),
-                              );
+                              // 선택한 책의 bookId가 null이 아닐 때만 Controller에 업데이트
+                              if (book['bookId'] != null) {
+                                controller.bookId.value = book['bookId'];
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ReadingTimerPage1()),
+                                );
+                              } else {
+                                // bookId가 null일 경우 오류 메시지 표시
+                                Get.snackbar("오류", "선택한 책의 ID를 찾을 수 없습니다.");
+                              }
                             },
                           ),
                         ],
