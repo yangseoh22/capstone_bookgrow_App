@@ -18,7 +18,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
   String publishedDate = 'YYYY.MM.DD';
   String isbn = '123456789123';
   String imageUrl = 'http://cover.nl.go.kr/';
-  List<String> thoughts = []; // 서버에서 가져올 "나의 생각"을 담는 리스트
+  List<String> review = [];
 
   @override
   void initState() {
@@ -29,19 +29,16 @@ class _ViewBookPageState extends State<ViewBookPage> {
   // 서버에 도서 조회 요청을 보내는 함수
   Future<void> getBookDetails() async {
     final bookId = controller.bookId.value;
-
     final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
-    print("도서 조회 요청 URL: $url"); // 요청 URL 로그
+    print("도서 조회 요청 URL: $url");
 
     try {
       final response = await http.get(url);
-
       print("도서 조회 응답 상태 코드: ${response.statusCode}");
       print("도서 조회 응답 본문: ${utf8.decode(response.bodyBytes)}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         setState(() {
           bookTitle = data['title'] ?? '도서제목입니다.';
           author = data['author'] ?? '저자';
@@ -49,9 +46,8 @@ class _ViewBookPageState extends State<ViewBookPage> {
           publishedDate = data['published_year'] ?? 'YYYY.MM.DD';
           isbn = data['isbn'] ?? '123456789123';
           imageUrl = data['image_url'] ?? 'http://cover.nl.go.kr/';
-          thoughts = List<String>.from(data['thoughts'] ?? []);
+          review = List<String>.from(data['review'] ?? []);
         });
-
         print("도서 정보가 성공적으로 불러와졌습니다.");
       } else {
         Get.snackbar("오류", "도서 정보를 불러오지 못했습니다.");
@@ -130,7 +126,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             ),
             SizedBox(height: 20),
             Text(
-              '나의 생각',
+              '리뷰',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -140,7 +136,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
             SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
-                itemCount: thoughts.length,
+                itemCount: review.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: EdgeInsets.only(bottom: 5),
@@ -151,7 +147,7 @@ class _ViewBookPageState extends State<ViewBookPage> {
                       border: Border.all(color: Colors.grey),
                     ),
                     child: Text(
-                      thoughts[index],
+                      review[index],
                       style: TextStyle(color: Colors.grey[700]),
                     ),
                   );
