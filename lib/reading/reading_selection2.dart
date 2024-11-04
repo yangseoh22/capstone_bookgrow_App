@@ -24,15 +24,14 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
   @override
   void initState() {
     super.initState();
-    getBookDetails(); // 도서 상세 정보를 가져오는 함수 호출
+    getBookDetails();
   }
 
   // 서버에 도서 조회 요청을 보내는 함수
   Future<void> getBookDetails() async {
     final bookId = controller.bookId.value;
-
     final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
-    print("도서 조회 요청 URL: $url"); // 요청 URL 로그
+    print("도서 조회 요청 URL: $url");
 
     try {
       final response = await http.get(url);
@@ -40,6 +39,9 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
+        print("서버로부터 받은 review 데이터: ${data['review']}");
+
         setState(() {
           bookTitle = data['title'] ?? '도서제목입니다.';
           author = data['author'] ?? '저자';
@@ -47,8 +49,12 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
           publishedDate = data['published_year'] ?? 'YYYY.MM.DD';
           isbn = data['isbn'] ?? '123456789123';
           imageUrl = data['image_url'] ?? 'http://cover.nl.go.kr/';
-          thoughts = List<String>.from(data['thoughts'] ?? []);
+          thoughts = List<String>.from(data['review'] ?? []);
         });
+
+        // 로깅: thoughts 리스트에 데이터가 잘 반영되었는지 확인
+        print("thoughts 리스트에 반영된 데이터: $thoughts");
+
         print("도서 정보가 성공적으로 불러와졌습니다.");
       } else {
         Get.snackbar("오류", "도서 정보를 불러오지 못했습니다.");
@@ -167,6 +173,7 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
               child: ListView.builder(
                 itemCount: thoughts.length,
                 itemBuilder: (context, index) {
+                  print("thoughts[$index]: ${thoughts[index]}");
                   return Container(
                     margin: EdgeInsets.only(bottom: 5),
                     padding: EdgeInsets.all(12),
