@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // GetX 패키지 추가
+import '../Controller.dart';
 import '../custom_bottom_nav.dart';
 import 'camera_page.dart'; // 카메라 페이지를 import
 import 'recommend_book.dart'; // recommend_book 페이지 가져오기
@@ -9,6 +11,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationPageState extends State<Recommendation> {
+  final Controller controller = Get.find(); // Controller 인스턴스 가져오기
   String _selectedEmotion = '행복'; // 초기값 설정
 
   @override
@@ -98,16 +101,6 @@ class _RecommendationPageState extends State<Recommendation> {
                       },
                     ),
                     RadioListTile<String>(
-                      title: Text('증오'),
-                      value: '증오',
-                      groupValue: _selectedEmotion,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedEmotion = value!;
-                        });
-                      },
-                    ),
-                    RadioListTile<String>(
                       title: Text('슬픔'),
                       value: '슬픔',
                       groupValue: _selectedEmotion,
@@ -118,8 +111,8 @@ class _RecommendationPageState extends State<Recommendation> {
                       },
                     ),
                     RadioListTile<String>(
-                      title: Text('답답'),
-                      value: '답답',
+                      title: Text('화남'),
+                      value: '화남',
                       groupValue: _selectedEmotion,
                       onChanged: (value) {
                         setState(() {
@@ -128,8 +121,18 @@ class _RecommendationPageState extends State<Recommendation> {
                       },
                     ),
                     RadioListTile<String>(
-                      title: Text('생각없음'),
-                      value: '생각없음',
+                      title: Text('무표정'),
+                      value: '무표정',
+                      groupValue: _selectedEmotion,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedEmotion = value!;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: Text('놀람'),
+                      value: '놀람',
                       groupValue: _selectedEmotion,
                       onChanged: (value) {
                         setState(() {
@@ -145,6 +148,10 @@ class _RecommendationPageState extends State<Recommendation> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
+                  // 선택된 감정을 컨트롤러에 저장
+                  controller.setEmotion(_selectedEmotion);
+                  print("Selected emotion '$_selectedEmotion' has been set in Controller.");
+
                   // 도서 추천 결과 페이지로 이동
                   Navigator.push(
                     context,

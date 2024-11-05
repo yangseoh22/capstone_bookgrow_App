@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'mybooks/mybooks.dart';
 import 'reading/reading_home.dart';
-import 'recommend/recommendation.dart';
+import 'recommend/recommend_home.dart';
 import 'mypages/profile.dart';
 
 class CustomBottomNavBar extends StatefulWidget {

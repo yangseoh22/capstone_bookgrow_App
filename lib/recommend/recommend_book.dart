@@ -1,7 +1,11 @@
-import 'package:bookgrow_app/recommend/recommendation.dart';
+import 'package:bookgrow_app/recommend/recommend_home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../Controller.dart';
 
 class RecommendBookPage extends StatelessWidget {
+  final Controller controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,14 +19,14 @@ class RecommendBookPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Text(
-              '감지된 감정 : {감정}',  // 감정 인식 부분
+            Obx(() => Text(
+              '감지된 감정 : ${controller.recognizedEmotion}',
               style: TextStyle(
                 color: Color(0xFF789C49),
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
-            ),
+            )),
             SizedBox(height: 30),
             Text(
               '이 도서들은 어떤가요?',
@@ -38,9 +42,9 @@ class RecommendBookPage extends StatelessWidget {
                 itemCount: 5, // 도서 목록 수
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0), // 위아래 여백 추가
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Container(
-                      padding: EdgeInsets.all(10), // 내부 여백 추가
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                       ),
@@ -59,8 +63,8 @@ class RecommendBookPage extends StatelessWidget {
                         title: Text(
                           '도서제목입니다.',
                           style: TextStyle(
-                            color: Colors.blueGrey, // 글씨 색상
-                            fontSize: 15, // 글씨 크기
+                            color: Colors.blueGrey,
+                            fontSize: 15,
                           ),
                         ),
                       ),
@@ -88,7 +92,7 @@ class RecommendBookPage extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  '도서 추천 종료하기', // 버튼 텍스트 수정
+                  '도서 추천 종료하기',
                   style: TextStyle(
                     color: Color(0xFF789C49),
                     fontWeight: FontWeight.bold,
