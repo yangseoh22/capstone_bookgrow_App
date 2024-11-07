@@ -114,6 +114,12 @@ class _CameraPageState extends State<CameraPage> {
         String responseBody = responseData.body.trim();
         print("서버 응답 본문: $responseBody");
 
+        // 얼굴 감지 오류 확인
+        if (responseBody.contains('얼굴이 감지되지 않았습니다')) {
+          _showErrorDialog("얼굴이 감지되지 않았습니다. 다시 시도해주세요.");
+          return null;
+        }
+
         if (responseBody.startsWith("인식된 감정:")) {
           responseBody = responseBody.replaceFirst("인식된 감정:", "").trim();
         }
@@ -135,6 +141,27 @@ class _CameraPageState extends State<CameraPage> {
       print("이미지 전송 중 오류 발생: $e");
       return null;
     }
+  }
+
+// 오류 메시지를 표시하기 위한 메서드
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("error!"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

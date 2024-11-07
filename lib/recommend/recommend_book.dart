@@ -65,6 +65,12 @@ class _RecommendBookPageState extends State<RecommendBookPage> {
       appBar: AppBar(
         title: Text('도서 추천'),
         backgroundColor: Color(0xFFE8D9AE),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: fetchRecommendations,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
