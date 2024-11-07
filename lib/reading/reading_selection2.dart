@@ -46,9 +46,9 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
           bookTitle = data['title'] ?? '도서제목입니다.';
           author = data['author'] ?? '저자';
           publisher = data['publisher'] ?? '출판사';
-          publishedDate = data['published_year'] ?? 'YYYY.MM.DD';
+          publishedDate = data['publishedDate'] ?? 'YYYY.MM.DD';
           isbn = data['isbn'] ?? '123456789123';
-          imageUrl = data['image_url'] ?? 'http://cover.nl.go.kr/';
+          imageUrl = data['imageUrl'] ?? 'http://cover.nl.go.kr/';
           thoughts = List<String>.from(data['review'] ?? []);
         });
 

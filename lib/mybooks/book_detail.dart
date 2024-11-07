@@ -43,9 +43,9 @@ class _ViewBookPageState extends State<ViewBookPage> {
           bookTitle = data['title'] ?? '도서제목입니다.';
           author = data['author'] ?? '저자';
           publisher = data['publisher'] ?? '출판사';
-          publishedDate = data['published_year'] ?? 'YYYY.MM.DD';
+          publishedDate = data['publishedDate'] ?? 'YYYY.MM.DD';
           isbn = data['isbn'] ?? '123456789123';
-          imageUrl = data['image_url'] ?? 'http://cover.nl.go.kr/';
+          imageUrl = data['imageUrl'] ?? 'http://cover.nl.go.kr/';
           review = List<String>.from(data['review'] ?? []);
         });
         print("도서 정보가 성공적으로 불러와졌습니다.");
@@ -93,7 +93,14 @@ class _ViewBookPageState extends State<ViewBookPage> {
                         height: 60,
                         color: Colors.grey,
                         child: (imageUrl != 'http://cover.nl.go.kr/')
-                            ? Image.network(imageUrl, fit: BoxFit.cover)
+                            ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'assets/images/img_none.png',
+                            fit: BoxFit.cover,
+                          ),
+                        )
                             : Image.asset('assets/images/img_none.png'),
                       ),
                       SizedBox(width: 20),
