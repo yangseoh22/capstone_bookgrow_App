@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // GetX 패키지 추가
+import 'package:get/get.dart';
 import '../Controller.dart';
 import '../custom_bottom_nav.dart';
-import 'camera_page.dart'; // 카메라 페이지를 import
-import 'recommend_book.dart'; // recommend_book 페이지 가져오기
+import 'camera_page.dart';
+import 'recommend_book.dart';
 
 class Recommendation extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class Recommendation extends StatefulWidget {
 }
 
 class _RecommendationPageState extends State<Recommendation> {
-  final Controller controller = Get.find(); // Controller 인스턴스 가져오기
+  final Controller controller = Get.find();
   String _selectedEmotion = '행복'; // 초기값 설정
 
   @override
@@ -26,7 +26,7 @@ class _RecommendationPageState extends State<Recommendation> {
             Text(
               '도서 추천',
               style: TextStyle(
-                color: Color(0xFF789C49), // 초록색 텍스트
+                color: Color(0xFF789C49),
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
@@ -35,7 +35,7 @@ class _RecommendationPageState extends State<Recommendation> {
             Text(
               '감정을 인식하기 위해 본인의 감정을 잘 표현하는\n표정을 찍어보세요. 도서를 추천해드립니다!',
               style: TextStyle(
-                color: Colors.grey[600], // 설명 텍스트 색상
+                color: Colors.grey[600],
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
