@@ -1,10 +1,63 @@
 import 'package:bookgrow_app/recommend/recommend_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../Controller.dart';
+import '../serverConfig.dart';
 
-class RecommendBookPage extends StatelessWidget {
+class RecommendBookPage extends StatefulWidget {
+  @override
+  _RecommendBookPageState createState() => _RecommendBookPageState();
+}
+
+class _RecommendBookPageState extends State<RecommendBookPage> {
   final Controller controller = Get.find();
+  List<Map<String, String>> bookRecommendations = []; // 도서 추천 결과 저장
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRecommendations();
+  }
+
+  Future<void> fetchRecommendations() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await http.get(
+        Uri.parse('$SERVER_URL/recommend/getBooks?emotion=${controller.recognizedEmotion}'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        // 서버에서 받은 데이터를 bookRecommendations에 저장
+        setState(() {
+          bookRecommendations = data.map((item) {
+            return {
+              'title': item['title']?.toString() ?? '제목 없음',
+              'image': item['image']?.toString() ?? '',
+              'isbn': item['isbn']?.toString() ?? '',
+            };
+          }).toList().cast<Map<String, String>>();
+          isLoading = false;
+        });
+      } else {
+        print('Failed to load recommendations: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching recommendations: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +90,22 @@ class RecommendBookPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Expanded(
+            isLoading
+                ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 145.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 150),
+                  CircularProgressIndicator(),
+                  SizedBox(height: 150),
+                ],
+              ),
+            )
+                : Expanded(
               child: ListView.builder(
-                itemCount: 5, // 도서 목록 수
+                itemCount: bookRecommendations.length,
                 itemBuilder: (context, index) {
+                  final book = bookRecommendations[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Container(
@@ -49,10 +114,26 @@ class RecommendBookPage extends StatelessWidget {
                         border: Border.all(color: Colors.grey),
                       ),
                       child: ListTile(
-                        leading: Container(
-                          width: 50,
+                        leading: book['image']!.isNotEmpty
+                            ? Image.network(
+                          book['image']!,
+                          fit: BoxFit.cover,
+                          width: 60,
                           height: 60,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Colors.grey,
+                            child: Center(
+                              child: Text(
+                                '책표지',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        )
+                            : Container(
                           color: Colors.grey,
+                          width: 60,
+                          height: 60,
                           child: Center(
                             child: Text(
                               '책표지',
@@ -61,12 +142,15 @@ class RecommendBookPage extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          '도서제목입니다.',
+                          book['title']!,
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontSize: 15,
                           ),
                         ),
+                        subtitle: book['isbn']!.isNotEmpty
+                            ? Text('ISBN: ${book['isbn']}')
+                            : null,
                       ),
                     ),
                   );
@@ -77,7 +161,6 @@ class RecommendBookPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // 다른 감정으로 추천 받기
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Recommendation()),
