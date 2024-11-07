@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../Controller.dart'; // 통합 Controller
+import '../Controller.dart';
 import '../custom_bottom_nav.dart';
+import '../login/login.dart';
 import '../serverConfig.dart';
 
 class Profile extends StatefulWidget {
@@ -32,14 +33,14 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    fetchUserData(); // 유저 데이터 가져오기
+    fetchUserData();
   }
 
   // 서버에서 유저 데이터를 가져오는 함수
   Future<void> fetchUserData() async {
     final userId = controller.userId.value;
     final url = Uri.parse('$SERVER_URL/user/get?id=$userId');
-    print("유저 데이터 요청 URL: $url"); // URL 확인
+    print("유저 데이터 요청 URL: $url");
 
     try {
       final response = await http.get(url);
@@ -108,12 +109,16 @@ class _ProfileState extends State<Profile> {
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        // 비밀번호 수정 로직
+                        // 로그아웃 버튼 눌렀을 때 로그인 페이지로 이동
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF789C49),
                       ),
-                      child: Text('수정', style: TextStyle(color: Colors.white)),
+                      child: Text('로그아웃', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],
