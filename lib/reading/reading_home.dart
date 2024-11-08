@@ -38,11 +38,11 @@ class _TimerState extends State<Timer> {
         setState(() {
           books = data.map((book) {
             return {
-              'bookId': book['bookId'], // bookId 포함
+              'bookId': book['bookId'],
               'title': book['title'],
               'image_url': book['image_url'],
-              'current_page': int.parse(book['current_page'] ?? '0'),
-              'total_page': int.parse(book['total_page'] ?? '1'),
+              'current_page': book['current_page'] ?? 0,
+              'total_page': book['total_page'] ?? 1,
             };
           }).toList();
         });

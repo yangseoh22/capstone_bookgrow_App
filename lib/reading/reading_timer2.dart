@@ -99,10 +99,12 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
     final url = Uri.parse('$SERVER_URL/reading/add?bookId=$bookId&userId=$userId');
 
     final totalTime = _formatDuration(widget.duration);
+
     List<String> reviewList = [_impressionController.text];
 
     Map<String, dynamic> readingData = {
-      "total_time": totalTime,
+      "time": totalTime,
+      "start_page": null,
       "end_page": int.parse(_pageController.text),
       "review": reviewList,
       "isCompleted": isCompleted

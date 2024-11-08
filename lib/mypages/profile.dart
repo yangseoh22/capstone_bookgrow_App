@@ -20,8 +20,8 @@ class _ProfileState extends State<Profile> {
   String nickname = '닉네임을 불러오는 중...';
   String registerId = '아이디를 불러오는 중...';
   String password = '**********';
-  int pagesPerDay = 0;
-  String timePerPage = '불러오는 중...';
+  double averagePagesPerDay = 0.0;
+  double timePerPage = 0.0;
   int owned = 0;
   int complete = 0;
   int flower = 0;
@@ -34,6 +34,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     fetchUserData();
+    fetchHabitData();
   }
 
   // 서버에서 유저 데이터를 가져오는 함수
@@ -52,8 +53,6 @@ class _ProfileState extends State<Profile> {
           name = data['name'] ?? '이름 없음';
           nickname = data['nickname'] ?? '닉네임 없음';
           registerId = data['registerId'] ?? '아이디 없음';
-          pagesPerDay = int.parse(data['pages_per_day'] ?? '0');
-          timePerPage = data['time_per_page'] ?? '0';
           owned = data['owned'] ?? 0;
           complete = data['complete'] ?? 0;
           flower = data['flower'] ?? 0;
@@ -61,12 +60,52 @@ class _ProfileState extends State<Profile> {
           cumulativeHours = data['cumulativeHours'] ?? 0;
           cumulativeMinutes = data['cumulativeMinutes'] ?? 0;
           cumulativeSeconds = data['cumulativeSeconds'] ?? 0;
+
+          // Log each value for debugging
+          print("User data fetched successfully:");
+          print("Name: $name");
+          print("Nickname: $nickname");
+          print("Register ID: $registerId");
+          print("Owned Books: $owned");
+          print("Completed Books: $complete");
+          print("Flowers: $flower");
+          print("Domination Count: $domination");
+          print("Cumulative Time: ${cumulativeHours}H ${cumulativeMinutes}M ${cumulativeSeconds}S");
         });
       } else {
         Get.snackbar("오류", "유저 데이터를 불러올 수 없습니다.");
       }
     } catch (error) {
       print("유저 데이터 요청 오류: $error");
+      Get.snackbar("오류", "네트워크 요청 실패: $error");
+    }
+  }
+
+  // 서버에서 유저의 독서 습관 데이터를 가져오는 함수
+  Future<void> fetchHabitData() async {
+    final userId = controller.userId.value;
+    final url = Uri.parse('$SERVER_URL/habit/get?userId=$userId');
+    print("독서 습관 요청 URL: $url");
+
+    try {
+      final response = await http.get(url);
+      print("독서 습관 응답 상태 코드: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          averagePagesPerDay = data['averagePagesPerDay'] ?? 0.0;
+          timePerPage = data['timePerPage'] ?? 0.0;
+
+          print("Habit data fetched successfully:");
+          print("Average Pages Per Day: $averagePagesPerDay");
+          print("Time Per Page: $timePerPage seconds");
+        });
+      } else {
+        Get.snackbar("오류", "독서 습관 데이터를 불러올 수 없습니다.");
+      }
+    } catch (error) {
+      print("독서 습관 요청 오류: $error");
       Get.snackbar("오류", "네트워크 요청 실패: $error");
     }
   }
@@ -138,8 +177,8 @@ class _ProfileState extends State<Profile> {
                   Text('나의 독서 습관', style: TextStyle(color: Color(0xFF789C49), fontWeight: FontWeight.bold)),
                   SizedBox(height: 10),
                   Text('누적 독서 시간: $cumulativeHours H $cumulativeMinutes M $cumulativeSeconds S'),
-                  Text('일별 평균 독서 쪽 수: $pagesPerDay쪽'),
-                  Text('쪽별 독서 소요 시간: $timePerPage'),
+                  Text('일별 평균 독서 쪽 수: ${averagePagesPerDay.toStringAsFixed(1)}쪽'),
+                  Text('쪽별 독서 소요 시간: ${timePerPage.toStringAsFixed(2)}초'),
                   Text('소지 도서 수: $owned권'),
                   Text('완독 도서 수: $complete권'),
                 ],
