@@ -26,3 +26,13 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/img_none.png
+    - assets/images/gray1.png
+    - assets/images/gray2.png
+    - assets/images/gray3.png
+    - assets/images/gray4.png
+    - assets/images/gray5.png
+    - assets/images/prog1.png
+    - assets/images/prog2.png
+    - assets/images/prog3.png
+    - assets/images/prog4.png
+    - assets/images/prog5.png
