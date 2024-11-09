@@ -14,25 +14,25 @@ class ReadingTimerPage1 extends StatefulWidget {
 
 class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
   final Controller controller = Get.find<Controller>();
-  bool isRunning = false; // 타이머가 실행 중인지 여부
-  Timer? _timer; // 타이머 객체
-  Duration duration = Duration(seconds: 0); // 타이머 시간
+  bool isRunning = false;
+  Timer? _timer;
+  Duration duration = Duration(seconds: 0);
   bool isScreenDimmed = false; // 화면이 어두워졌는지 여부
   Timer? _dimTimer; // 화면을 어둡게 하는 타이머
-  String bookTitle = '도서제목입니다'; // 서버에서 가져올 책 제목
+  String bookTitle = '도서제목입니다';
 
   @override
   void initState() {
     super.initState();
-    getBookTitle(); // 서버에서 책 제목 가져오기
-    _startDimTimer(); // 초기화 시 어두워짐 타이머 시작
+    getBookTitle();
+    _startDimTimer();
   }
 
   // 서버에서 책 제목을 가져오는 함수
   Future<void> getBookTitle() async {
     final bookId = controller.bookId.value;
     final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
-    print("도서 제목 요청 URL: $url"); // 요청 URL 로그
+    print("도서 제목 요청 URL: $url");
 
     try {
       final response = await http.get(url);
@@ -60,7 +60,7 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
     });
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
       setState(() {
-        duration = Duration(seconds: duration.inSeconds + 1); // 타이머 1초씩 증가
+        duration = Duration(seconds: duration.inSeconds + 1);
       });
     });
   }
@@ -71,7 +71,7 @@ class _ReadingTimerPage1State extends State<ReadingTimerPage1> {
       isRunning = false;
       _resetDimTimer(); // 버튼을 누르면 화면 어두워짐 타이머도 초기화
     });
-    _timer?.cancel(); // 타이머 중지
+    _timer?.cancel();
   }
 
   // 타이머 정지 후 다음 페이지로 이동

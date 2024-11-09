@@ -228,7 +228,7 @@ class _ProfileState extends State<Profile> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('기부 프로젝트'),
-          content: Text('획득한 꽃의 수가 3의 배수가 될 때마다 지역 도서관에 기부가 진행됩니다. 자세한 기부 상황을 보려면, http://doseagwan.giboo를 참고하세요.'),
+          content: Text('획득한 꽃의 수가 3의 배수가 될 때마다 지역 도서관에 기부가 진행됩니다. 자세한 기부 상황을 보려면, http://doseogwan.giboo를 참고하세요.'),
           actions: [
             TextButton(
               child: Text('확인'),
