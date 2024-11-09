@@ -103,7 +103,7 @@ class _ReadingTimerPage2State extends State<ReadingTimerPage2> {
     List<String> reviewList = [_impressionController.text];
 
     Map<String, dynamic> readingData = {
-      "time": totalTime,
+      "read_time": totalTime,
       "start_page": null,
       "end_page": int.parse(_pageController.text),
       "review": reviewList,
