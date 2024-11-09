@@ -72,12 +72,13 @@ class LoginPage extends StatelessWidget {
     print("LoginPage 위젯 빌드 시작");
     return Scaffold(
       backgroundColor: Color(0xFFF0E3C0),
-      body: Center(
+      body: SingleChildScrollView( // 스크롤 가능한 영역으로 설정
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start, // Start로 설정하여 위로 정렬
             children: [
+              SizedBox(height: 100),
               Text(
                 'Book Grow',
                 style: TextStyle(
@@ -86,7 +87,14 @@ class LoginPage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 10),
+              // 이미지 추가
+              Image.asset(
+                'assets/images/logo1.png',  // 이미지 경로
+                height: 240,
+                width: 240,
+              ),
+              SizedBox(height: 24),
               TextField(
                 controller: _idController,
                 decoration: InputDecoration(
@@ -101,7 +109,7 @@ class LoginPage extends StatelessWidget {
                   print("ID 입력 변경: $text"); // ID 입력 시 실시간 로그
                 },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 14),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
@@ -117,7 +125,7 @@ class LoginPage extends StatelessWidget {
                   print("Password 입력 변경: $text"); // Password 입력 시 실시간 로그
                 },
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   print("로그인 버튼 클릭됨");
@@ -135,7 +143,7 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 4),
               TextButton(
                 onPressed: () {
                   print("회원가입 버튼 클릭됨");
