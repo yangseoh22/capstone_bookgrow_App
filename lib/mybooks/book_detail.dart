@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import '../Controller.dart'; // 통합 Controller
+import '../serverConfig.dart';
 
 class ViewBookPage extends StatefulWidget {
   @override
@@ -8,6 +11,7 @@ class ViewBookPage extends StatefulWidget {
 }
 
 class _ViewBookPageState extends State<ViewBookPage> {
+  final Controller controller = Get.find<Controller>();
   String bookTitle = '도서제목입니다.';
   String author = '홍길동';
   String publisher = '출판사';
@@ -15,11 +19,9 @@ class _ViewBookPageState extends State<ViewBookPage> {
   String isbn = '123456789123';
   String imageUrl = 'http://cover.nl.go.kr/';
   List<String> review = [];
+  int currentPage = 150;
+  int totalPages = 200;
 
-  int currentPage = 150; // 현재 읽은 페이지 예시
-  int totalPages = 200; // 전체 페이지 수 예시
-
-  // 각 단계별로 회색/색상 이미지 경로를 저장
   final List<String> grayImages = [
     'assets/images/gray1.png',
     'assets/images/gray2.png',
@@ -36,9 +38,8 @@ class _ViewBookPageState extends State<ViewBookPage> {
     'assets/images/prog5.png',
   ];
 
-  // 진행도에 따라 이미지 선택 함수
   List<String> getImagePaths(double progress) {
-    List<String> selectedImages = List.from(grayImages); // 기본적으로 회색 이미지
+    List<String> selectedImages = List.from(grayImages);
 
     if (progress >= 0) selectedImages[0] = coloredImages[0];
     if (progress >= 0.25) selectedImages[1] = coloredImages[1];
@@ -50,9 +51,43 @@ class _ViewBookPageState extends State<ViewBookPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchBookDetails();
+  }
+
+  // 서버에서 도서 정보를 가져오는 함수
+  Future<void> fetchBookDetails() async {
+    final bookId = controller.bookId.value;
+    final url = Uri.parse('$SERVER_URL/book/get?id=$bookId');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          bookTitle = data['title'] ?? '도서제목입니다.';
+          author = data['author'] ?? '저자 정보 없음';
+          publisher = data['publisher'] ?? '출판사 정보 없음';
+          publishedDate = data['publishedDate'] ?? '발행일 정보 없음';
+          isbn = data['isbn'] ?? 'ISBN 정보 없음';
+          imageUrl = data['imageUrl'] ?? 'http://cover.nl.go.kr/';
+          totalPages = data['totalPage'] ?? 0;
+          currentPage = data['currentPage'] ?? 0;
+          review = List<String>.from(data['review'] ?? []);
+        });
+      } else {
+        print('도서 정보를 불러오는 데 실패했습니다');
+      }
+    } catch (error) {
+      print('도서 정보 요청 오류: $error');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final progress = (currentPage / totalPages).clamp(0.0, 1.0); // 진행도 계산
-    final imagePaths = getImagePaths(progress); // 진행도에 따른 이미지 리스트
+    final progress = (currentPage / totalPages).clamp(0.0, 1.0);
+    final imagePaths = getImagePaths(progress);
 
     return Scaffold(
       body: Padding(
@@ -117,7 +152,6 @@ class _ViewBookPageState extends State<ViewBookPage> {
                   Text('ISBN: $isbn', style: TextStyle(color: Colors.grey[700])),
                   SizedBox(height: 20),
 
-                  // 이미지 진행 상태 표시
                   Row(
                     children: [
                       ...List.generate(5, (index) {
@@ -132,12 +166,11 @@ class _ViewBookPageState extends State<ViewBookPage> {
                   ),
                   SizedBox(height: 5),
 
-                  // 진행 바
                   Row(
                     children: [
                       Expanded(
                         child: Container(
-                          height: 16, // 진행 바의 굵기 설정
+                          height: 16,
                           child: LinearProgressIndicator(
                             value: progress,
                             color: Color(0xFF789C49),
@@ -148,7 +181,6 @@ class _ViewBookPageState extends State<ViewBookPage> {
                     ],
                   ),
 
-                  // 진행률 표시 (아랫줄, 오른쪽 정렬)
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
