@@ -20,9 +20,8 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
   String isbn = '123456789123';
   String imageUrl = 'http://cover.nl.go.kr/';
   List<String> thoughts = [];
-
-  int currentPage = 170; // 현재 읽은 페이지 예시
-  int totalPages = 200; // 전체 페이지 수 예시
+  int currentPage = 0;
+  int totalPages = 0;
 
   // 각 단계별로 회색/색상 이미지 경로를 저장
   final List<String> grayImages = [
@@ -80,6 +79,8 @@ class _ReadingSelectionPage2State extends State<ReadingSelectionPage2> {
           publishedDate = data['publishedDate'] ?? 'YYYY.MM.DD';
           isbn = data['isbn'] ?? '123456789123';
           imageUrl = data['imageUrl'] ?? 'http://cover.nl.go.kr/';
+          totalPages = data['totalPage'] ?? 0;
+          currentPage = data['currentPage'] ?? 0;
           thoughts = List<String>.from(data['review'] ?? []);
         });
 
