@@ -81,7 +81,7 @@ class _RecommendationPageState extends State<Recommendation> {
               style: TextStyle(
                 color: Colors.grey[600],
                 fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontSize: 16,
               ),
             ),
             SizedBox(height: 10),

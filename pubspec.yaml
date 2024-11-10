@@ -16,7 +16,6 @@ dependencies:
   get: ^4.6.6
   cupertino_icons: ^1.0.8
   camera: ^0.10.0+3
-  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -38,3 +37,12 @@ flutter:
     - assets/images/prog4.png
     - assets/images/prog5.png
     - assets/images/logo1.png
+    - assets/fonts/
+
+  fonts:
+    - family: MyFont
+      fonts:
+        - asset: assets/fonts/gyeongki_Regular.ttf
+    - family: TitleFont
+      fonts:
+        - asset: assets/fonts/gyeongki_Bold.ttf

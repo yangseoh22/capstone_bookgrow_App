@@ -17,6 +17,14 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/login', page: () => LoginPage()), // 로그인 페이지
       ],
+      theme: ThemeData(
+        // 글꼴을 전체적으로 적용
+        fontFamily: 'MyFont', // 적용할 글꼴 이름
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'MyFont'),  // bodyLarge 사용
+          bodyMedium: TextStyle(fontFamily: 'MyFont'),  // bodyMedium 사용
+        ),
+      ),
     );
   }
 }

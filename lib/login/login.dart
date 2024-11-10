@@ -82,6 +82,7 @@ class LoginPage extends StatelessWidget {
               Text(
                 'Book Grow',
                 style: TextStyle(
+                  fontFamily: 'TitleFont',
                   color: Color(0xFF789C49),
                   fontSize: 40,
                   fontWeight: FontWeight.bold,

@@ -90,14 +90,14 @@ class _MyBooksState extends State<MyBooks> {
                 label: Text(
                   '새로운 도서 등록하러 가기',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 17,
                     color: Color(0xFF789C49),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF1F4E8),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 30),
                   side: BorderSide(
                     color: Color(0xFF789C49),
                     width: 1.0,
